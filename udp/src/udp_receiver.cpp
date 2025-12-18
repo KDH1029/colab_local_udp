@@ -8,7 +8,7 @@
 
 #include "humanoid_interfaces/msg/robocupvision25.hpp"
 
-#define UDP_PORT 8888
+#define PORT 8888
 #define MAX_BUF_SIZE 65535
 
 class UdpReceiver : public rclcpp::Node {
@@ -24,10 +24,10 @@ public:
         memset(&serv_addr, 0, sizeof(serv_addr));
         serv_addr.sin_family = AF_INET;
         serv_addr.sin_addr.s_addr = INADDR_ANY;
-        serv_addr.sin_port = htons(UDP_PORT);
+        serv_addr.sin_port = htons(PORT);
 
         if (bind(sockfd_, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0) {
-            RCLCPP_ERROR(this->get_logger(), "Socket bind failed (Port %d)", UDP_PORT);
+            RCLCPP_ERROR(this->get_logger(), "Socket bind failed (Port %d)", PORT);
             close(sockfd_);
             exit(EXIT_FAILURE);
         }
@@ -38,7 +38,7 @@ public:
             std::chrono::milliseconds(1), 
             std::bind(&UdpReceiver::udp_receive_loop, this));
 
-        RCLCPP_INFO(this->get_logger(), "UDP Receiver Started on Port %d", UDP_PORT);
+        RCLCPP_INFO(this->get_logger(), "UDP Receiver Started on Port %d", PORT);
     }
 
     ~UdpReceiver() {
@@ -89,4 +89,5 @@ int main(int argc, char **argv) {
     rclcpp::spin(std::make_shared<UdpReceiver>());
     rclcpp::shutdown();
     return 0;
+
 }
