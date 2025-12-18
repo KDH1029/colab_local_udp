@@ -7,8 +7,8 @@
 
 #include "humanoid_interfaces/msg/robocupvision25.hpp"
 
-#define ROBOT_B_IP "127.0.0.1" 
-#define UDP_PORT 8888
+#define IP "127.0.0.1" 
+#define PORT 8888
 
 using std::placeholders::_1;
 
@@ -23,15 +23,15 @@ public:
 
         memset(&dest_addr_, 0, sizeof(dest_addr_));
         dest_addr_.sin_family = AF_INET;
-        dest_addr_.sin_port = htons(UDP_PORT);
-        dest_addr_.sin_addr.s_addr = inet_addr(ROBOT_B_IP);
+        dest_addr_.sin_port = htons(PORT);
+        dest_addr_.sin_addr.s_addr = inet_addr(IP);
 
         vision_sub_ = this->create_subscription<humanoid_interfaces::msg::Robocupvision25>(
             "vision", 
             10, 
             std::bind(&UdpSender::vision_callback, this, _1));
 
-        RCLCPP_INFO(this->get_logger(), "UDP Sender Started. Target: %s:%d", ROBOT_B_IP, UDP_PORT);
+        RCLCPP_INFO(this->get_logger(), "UDP Sender Started. Target: %s:%d", IP, PORT);
     }
 
     ~UdpSender() {
@@ -64,4 +64,5 @@ int main(int argc, char **argv) {
     rclcpp::spin(std::make_shared<UdpSender>());
     rclcpp::shutdown();
     return 0;
+
 }
